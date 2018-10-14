@@ -30,17 +30,24 @@ func (sm *StateMachine) Update() int {
 
 //AddState adds a new state to the StateMachine.
 //The first state to be added is the start state of the machine.
-func (sm *StateMachine) AddState(stateID int) {
+func (sm *StateMachine) AddState(stateID int) *StateMachine {
 	if len(sm.allStates) == 0 {
 		sm.currentState = stateID
 	}
 
 	sm.allStates[stateID] = make(map[int](func() bool), 0)
+
+	return sm
 }
 
 //Creates a state change between the fromState and the toState when the changeStateFunc evaluates to true.
-func (sm *StateMachine) AddStateChange(fromState, toState int, changeStateFunc func() bool) {
+func (sm *StateMachine) AddStateChange(fromState, toState int, changeStateFunc func() bool) *StateMachine {
 	state := sm.allStates[fromState]
 
 	state[toState] = changeStateFunc
+	return sm
+}
+
+func (sm StateMachine) CurrentState() int {
+	return sm.currentState
 }
