@@ -1,6 +1,7 @@
 package statemachine
 
 type StateMachine struct {
+	startState      int
 	currentState    int
 	changeStateFunc func()
 	allStates       map[int](map[int](func() bool))
@@ -28,10 +29,16 @@ func (sm *StateMachine) Update() int {
 	return sm.currentState
 }
 
+func (sm *StateMachine) ResetMachine() {
+	sm.changeStateFunc()
+	sm.currentState = sm.startState
+}
+
 //AddState adds a new state to the StateMachine.
 //The first state to be added is the start state of the machine.
 func (sm *StateMachine) AddState(stateID int) *StateMachine {
 	if len(sm.allStates) == 0 {
+		sm.startState = stateID
 		sm.currentState = stateID
 	}
 
